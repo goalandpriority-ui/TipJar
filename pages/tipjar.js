@@ -1,22 +1,32 @@
 import { useState } from 'react'
 
 export default function TipJar({ onNewTip }) {
+  const [username, setUsername] = useState('')
   const [amount, setAmount] = useState('')
   const [message, setMessage] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (!username) return alert('Enter Farcaster username!')
     if (!amount) return alert('Enter tip amount!')
 
-    const tip = { amount, message: message || 'No message' }
+    const tip = { username, amount, message: message || 'No message' }
     onNewTip(tip)
 
+    setUsername('')
     setAmount('')
     setMessage('')
   }
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <input
+        type="text"
+        placeholder="Farcaster username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px', border: '1px solid #ccc' }}
+      />
       <input
         type="number"
         placeholder="Amount in USD"
