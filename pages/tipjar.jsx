@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Web3Provider, parseEther } from "ethers"; // ethers v6+
+import ethers from "ethers"; // v6 default import
 
 export default function TipJar() {
   const [wallet, setWallet] = useState("");
@@ -28,19 +28,15 @@ export default function TipJar() {
     const total = parseFloat(amount);
 
     try {
-      const provider = new Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
+      const provider = new ethers.BrowserProvider(window.ethereum); // v6
+      const signer = await provider.getSigner();
 
-      // Send ETH minus fee to creator
       await signer.sendTransaction({
         to: CREATOR_WALLET,
-        value: parseEther((total - fee).toString()),
+        value: ethers.parseEther((total - fee).toString()), // v6 parseEther
       });
 
-      // Update recent tips
       setTips([{ from: wallet, value: (total - fee).toFixed(4) }, ...tips]);
-
-      // Update total earnings
       setTotalEarnings(prev => prev + fee);
 
       alert(`Tip sent! App earned ${fee.toFixed(4)} ETH`);
