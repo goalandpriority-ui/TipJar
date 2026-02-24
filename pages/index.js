@@ -13,13 +13,10 @@ export default function Home() {
       textAlign: 'center',
       fontFamily: 'Arial, sans-serif'
     }}>
-      {/* Professional header */}
       <h1 style={{ fontSize: '2rem', marginBottom: '20px' }}>💰 Tip Jar</h1>
 
-      {/* Tip input */}
       <TipJar onNewTip={addTip} />
 
-      {/* Recent tips log */}
       {tips.length > 0 && (
         <div style={{ marginTop: '30px', textAlign: 'left' }}>
           <h2>Recent Tips</h2>
@@ -31,7 +28,7 @@ export default function Home() {
                 padding: '10px',
                 borderRadius: '5px'
               }}>
-                <strong>${t.amount}</strong> - {t.message}
+                <strong>@{t.username}</strong> - ${t.amount} - {t.message}
               </li>
             ))}
           </ul>
@@ -39,4 +36,4 @@ export default function Home() {
       )}
     </div>
   )
-                      }
+}
