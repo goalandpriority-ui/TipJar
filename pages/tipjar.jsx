@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ethers } from "ethers";
+import { Web3Provider, parseEther } from "ethers"; // ethers v6+
 
 export default function TipJar() {
   const [wallet, setWallet] = useState("");
@@ -12,7 +12,7 @@ export default function TipJar() {
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         setWallet(accounts[0]);
       } catch (err) {
         alert("Wallet connection failed");
@@ -27,16 +27,20 @@ export default function TipJar() {
     const fee = parseFloat(amount) * 0.05; // 5% app fee
     const total = parseFloat(amount);
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-
     try {
+      const provider = new Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      // Send ETH minus fee to creator
       await signer.sendTransaction({
         to: CREATOR_WALLET,
-        value: ethers.utils.parseEther((total - fee).toString()),
+        value: parseEther((total - fee).toString()),
       });
 
+      // Update recent tips
       setTips([{ from: wallet, value: (total - fee).toFixed(4) }, ...tips]);
+
+      // Update total earnings
       setTotalEarnings(prev => prev + fee);
 
       alert(`Tip sent! App earned ${fee.toFixed(4)} ETH`);
@@ -51,7 +55,9 @@ export default function TipJar() {
       <h1>🐙 Tip Jar</h1>
 
       {!wallet ? (
-        <button onClick={connectWallet} style={{ padding: "0.5rem 1rem", fontSize: "1rem" }}>Connect Wallet</button>
+        <button onClick={connectWallet} style={{ padding: "0.5rem 1rem", fontSize: "1rem" }}>
+          Connect Wallet
+        </button>
       ) : (
         <div style={{ marginBottom: "1rem" }}>
           <p><strong>Connected:</strong> {wallet}</p>
