@@ -1,24 +1,37 @@
 import { useState } from 'react'
-import TipJar from '../tipjar'
+import TipJar from './tipjar'
 
 export default function Home() {
   const [tips, setTips] = useState([])
 
-  const addTip = (tip) => {
-    setTips([tip, ...tips])
-  }
+  const addTip = (tip) => setTips([tip, ...tips])
 
   return (
-    <div style={{ maxWidth: '500px', margin: '50px auto', textAlign: 'center', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{
+      maxWidth: '500px',
+      margin: '50px auto',
+      textAlign: 'center',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      {/* Professional header */}
       <h1 style={{ fontSize: '2rem', marginBottom: '20px' }}>💰 Tip Jar</h1>
+
+      {/* Tip input */}
       <TipJar onNewTip={addTip} />
+
+      {/* Recent tips log */}
       {tips.length > 0 && (
-        <div style={{ marginTop: '30px' }}>
+        <div style={{ marginTop: '30px', textAlign: 'left' }}>
           <h2>Recent Tips</h2>
           <ul style={{ listStyle: 'none', padding: 0 }}>
             {tips.map((t, i) => (
-              <li key={i} style={{ margin: '10px 0', background: '#f1f1f1', padding: '10px', borderRadius: '5px' }}>
-                {t.message} - ${t.amount}
+              <li key={i} style={{
+                margin: '10px 0',
+                background: '#f1f1f1',
+                padding: '10px',
+                borderRadius: '5px'
+              }}>
+                <strong>${t.amount}</strong> - {t.message}
               </li>
             ))}
           </ul>
@@ -26,4 +39,4 @@ export default function Home() {
       )}
     </div>
   )
-}
+                      }
