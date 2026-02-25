@@ -6,6 +6,12 @@ export default function Home() {
 
   const addTip = (tip) => setTips([tip, ...tips])
 
+  const shareTip = (tip) => {
+    const text = `@${tip.username} just tipped $${tip.amount} – "${tip.message}"`
+    const url = `https://warpcast.com/?text=${encodeURIComponent(text)}`
+    window.open(url, '_blank')
+  }
+
   return (
     <div style={{
       maxWidth: '500px',
@@ -26,9 +32,24 @@ export default function Home() {
                 margin: '10px 0',
                 background: '#f1f1f1',
                 padding: '10px',
-                borderRadius: '5px'
+                borderRadius: '5px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
               }}>
-                <strong>@{t.username}</strong> - ${t.amount} - {t.message}
+                <span>
+                  <strong>@{t.username}</strong> - ${t.amount} - {t.message}
+                </span>
+                <button onClick={() => shareTip(t)} style={{
+                  cursor: 'pointer',
+                  background: '#3b49df',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '5px',
+                  padding: '5px 10px'
+                }}>
+                  Share
+                </button>
               </li>
             ))}
           </ul>
