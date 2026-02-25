@@ -1,17 +1,14 @@
-import '../globals.css'
-import { WagmiConfig, createClient, configureChains, mainnet } from 'wagmi'
-import { publicProvider } from 'wagmi/providers/public'
+// pages/_app.js
+import '../styles/globals.css'
+import { WagmiConfig } from 'wagmi'
+import wagmiConfig from '../wagmiConfig'
 
-const { provider } = configureChains([mainnet], [publicProvider()])
-const client = createClient({
-  autoConnect: true,
-  provider
-})
-
-export default function App({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   return (
-    <WagmiConfig client={client}>
+    <WagmiConfig config={wagmiConfig}>
       <Component {...pageProps} />
     </WagmiConfig>
   )
 }
+
+export default MyApp
