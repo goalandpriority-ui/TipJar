@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSigner } from 'wagmi'
 import { ethers } from 'ethers'
 
-const tipInEth = (usd) => (usd * 0.0005).toString() // example conversion
+const tipInEth = (usd) => (usd * 0.0005).toString()
 
 export default function TipJar({ onNewTip }) {
   const [username, setUsername] = useState('')
@@ -17,14 +17,13 @@ export default function TipJar({ onNewTip }) {
 
     try {
       await signer.sendTransaction({
-        to: '0xYourTreasuryAddressHere', // replace with your wallet
+        to: '0xYourTreasuryAddressHere',
         value: ethers.utils.parseEther(tipInEth(amount))
       })
 
       const tip = { username, amount, message: message || 'No message' }
       onNewTip(tip)
 
-      // Farcaster share
       const text = `@${username} just tipped $${amount} – "${message || 'No message'}"`
       const url = `https://warpcast.com/?text=${encodeURIComponent(text)}`
       window.open(url, '_blank')
@@ -39,10 +38,10 @@ export default function TipJar({ onNewTip }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-      <input type="text" placeholder="Farcaster username" value={username} onChange={(e)=>setUsername(e.target.value)} />
-      <input type="number" placeholder="Amount USD" value={amount} onChange={(e)=>setAmount(e.target.value)} />
-      <input type="text" placeholder="Message (optional)" value={message} onChange={(e)=>setMessage(e.target.value)} />
+    <form onSubmit={handleSubmit}>
+      <input type="text" placeholder="Farcaster username" value={username} onChange={e=>setUsername(e.target.value)} />
+      <input type="number" placeholder="Amount USD" value={amount} onChange={e=>setAmount(e.target.value)} />
+      <input type="text" placeholder="Message (optional)" value={message} onChange={e=>setMessage(e.target.value)} />
       <button type="submit">Send Tip</button>
     </form>
   )
