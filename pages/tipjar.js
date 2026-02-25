@@ -1,21 +1,47 @@
 import { useState } from 'react'
+import { useAccount, useSigner } from 'wagmi'
+import { ethers } from 'ethers'
 
 export default function TipJar({ onNewTip }) {
   const [username, setUsername] = useState('')
   const [amount, setAmount] = useState('')
   const [message, setMessage] = useState('')
+  const { data: signer } = useSigner()
+  const { address } = useAccount()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!username) return alert('Enter Farcaster username!')
     if (!amount) return alert('Enter tip amount!')
+    if (!signer) return alert('Connect your wallet first!')
 
-    const tip = { username, amount, message: message || 'No message' }
-    onNewTip(tip)
+    // Convert USD → ETH (example rate 1 USD = 0.0005 ETH)
+    const ethAmount = (parseFloat(amount) * 0.0005).toFixed(6)
 
-    setUsername('')
-    setAmount('')
-    setMessage('')
+    try {
+      // send ETH to treasury wallet
+      const tx = await signer.sendTransaction({
+        to: '0xYourTreasuryAddressHere', // replace with your wallet
+        value: ethers.utils.parseEther(ethAmount.toString())
+      })
+      await tx.wait()
+
+      const tip = { username, amount, message: message || 'No message' }
+      onNewTip(tip)
+
+      // Farcaster share
+      const text = `@${username} just tipped $${amount} – "${message || 'No message'}"`
+      const url = `https://warpcast.com/?text=${encodeURIComponent(text)}`
+      window.open(url, '_blank')
+
+      // Reset inputs
+      setUsername('')
+      setAmount('')
+      setMessage('')
+    } catch (err) {
+      console.error(err)
+      alert('Transaction failed!')
+    }
   }
 
   return (
@@ -54,4 +80,4 @@ export default function TipJar({ onNewTip }) {
       </button>
     </form>
   )
-}
+          }
