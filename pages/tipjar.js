@@ -1,5 +1,6 @@
-// pages/tipjar.js
-import { useState } from 'react'
+// components/TipJar.js
+'use client'
+import { useState, useEffect } from 'react'
 import { useSigner } from 'wagmi'
 import { ethers } from 'ethers'
 
@@ -16,13 +17,12 @@ export default function TipJar() {
     if (!signer) return alert('Connect wallet first!')
 
     try {
-      // Send tip to treasury wallet
+      // Send tip
       await signer.sendTransaction({
         to: '0xYourTreasuryAddressHere', // Change to your wallet
         value: ethers.utils.parseEther((0.0005 * amount).toString())
       })
 
-      // Log tip
       const tip = { username, amount, message: message || 'No message' }
       setRecentTips([tip, ...recentTips])
 
